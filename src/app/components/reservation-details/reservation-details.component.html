@@ -1,0 +1,64 @@
+<div class="container py-4" style="max-width:640px;">
+  <div class="d-flex align-items-center mb-4">
+    <a routerLink="/reservations/track" class="btn btn-outline-secondary btn-sm me-3"><i class="bi bi-arrow-left me-1"></i>Back</a>
+    <h4 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i>Reservation Details</h4>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+  <div *ngIf="error" class="alert alert-danger py-2">{{ error }}</div>
+
+  <div *ngIf="!loading && reservation" class="card shadow-sm">
+    <div class="card-header fw-semibold">Reservation #{{ reservation.id }}</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-6">
+          <div class="small text-muted">Travel Request</div>
+          <div>#{{ reservation.travelRequestId }}</div>
+        </div>
+        <div class="col-6">
+          <div class="small text-muted">Type</div>
+          <span class="badge bg-primary">{{ reservation.reservationTypeName }}</span>
+        </div>
+        <div class="col-6">
+          <div class="small text-muted">Provider</div>
+          <div>{{ reservation.reservationDoneWithEntity }}</div>
+        </div>
+        <div class="col-6">
+          <div class="small text-muted">Confirmation / PNR</div>
+          <div>{{ reservation.confirmationId }}</div>
+        </div>
+        <div class="col-6">
+          <div class="small text-muted">Reservation Date</div>
+          <div>{{ formatDate(reservation.reservationDate) }}</div>
+        </div>
+        <div class="col-6">
+          <div class="small text-muted">Amount</div>
+          <div class="fw-bold text-success">Rs. {{ reservation.amount | number }}</div>
+        </div>
+        <div class="col-6">
+          <div class="small text-muted">Booked By (Employee ID)</div>
+          <div>{{ reservation.reservationDoneByEmployeeId }}</div>
+        </div>
+        <div class="col-6">
+          <div class="small text-muted">Created On</div>
+          <div>{{ formatDate(reservation.createdOn) }}</div>
+        </div>
+        <div class="col-12" *ngIf="reservation.remarks">
+          <div class="small text-muted">Remarks</div>
+          <div>{{ reservation.remarks }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="downloadError" class="alert alert-danger py-2 mt-3">{{ downloadError }}</div>
+
+      <div class="mt-4">
+        <button class="btn btn-primary" (click)="downloadPdf()" [disabled]="downloading">
+          <span *ngIf="downloading" class="spinner-border spinner-border-sm me-1"></span>
+          {{ downloading ? 'Downloading...' : 'Download Booking PDF' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

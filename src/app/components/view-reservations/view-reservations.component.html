@@ -1,0 +1,75 @@
+<div class="container py-4" style="max-width:880px;">
+  <h4 class="fw-bold mb-4"><i class="bi bi-calendar-check me-2 text-primary"></i>View Reservations</h4>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body p-3">
+      <div *ngIf="trError" class="alert alert-warning py-2 mb-3">{{ trError }}</div>
+
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()" novalidate class="row g-2 align-items-end">
+        <div class="col-auto flex-grow-1">
+          <label class="form-label fw-semibold mb-1">Travel Request</label>
+          <select class="form-select"
+            [class.is-invalid]="f['travelRequestId'].invalid && f['travelRequestId'].touched"
+            formControlName="travelRequestId">
+            <option [ngValue]="null" disabled>
+              {{ trLoading ? 'Loading travel requests...' : 'Select a travel request' }}
+            </option>
+            <option *ngFor="let tr of travelRequests" [ngValue]="tr.requestId">
+              #{{ tr.requestId }} — {{ tr.purposeOfTravel }} ({{ tr.locationName }})
+            </option>
+          </select>
+          <div class="invalid-feedback">Please select a travel request.</div>
+          <div *ngIf="!trLoading && !trError && travelRequests.length === 0"
+               class="form-text text-muted">No approved travel requests available.</div>
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary" [disabled]="loading || trLoading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+            Show Reservations
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- No reservations for the selected travel request -->
+  <div *ngIf="searched && noResultsMessage" class="alert alert-info d-flex align-items-center py-3">
+    <i class="bi bi-info-circle-fill me-2"></i>{{ noResultsMessage }}
+  </div>
+
+  <!-- Reservations table -->
+  <div *ngIf="searched && reservations.length > 0" class="card shadow-sm">
+    <div class="card-header bg-white fw-semibold">
+      Reservations for travel request #{{ selectedTrid }}
+      <span class="badge bg-secondary ms-1">{{ reservations.length }}</span>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Type</th>
+              <th>Provider</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>PNR / Confirmation</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of reservations">
+              <td class="fw-semibold text-primary">#{{ r.id }}</td>
+              <td><span class="badge bg-primary">{{ r.reservationTypeName }}</span></td>
+              <td>{{ r.reservationDoneWithEntity }}</td>
+              <td>{{ formatDate(r.reservationDate) }}</td>
+              <td>Rs. {{ r.amount | number }}</td>
+              <td>{{ r.confirmationId }}</td>
+              <td class="text-muted">{{ r.remarks || '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

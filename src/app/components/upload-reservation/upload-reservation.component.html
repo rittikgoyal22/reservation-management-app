@@ -1,0 +1,102 @@
+<div class="container py-4" style="max-width:680px;">
+  <h4 class="fw-bold mb-4"><i class="bi bi-plus-circle-fill me-2 text-primary"></i>Add Reservation</h4>
+
+  <div *ngIf="dataLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success py-2">{{ success }}</div>
+  <div *ngIf="error"   class="alert alert-danger  py-2">{{ error }}</div>
+
+  <div *ngIf="!dataLoading" class="card shadow-sm">
+    <div class="card-body p-4">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Travel Request</label>
+          <select class="form-select" style="max-width:420px"
+            [class.is-invalid]="f['travelRequestId'].invalid && f['travelRequestId'].touched"
+            formControlName="travelRequestId">
+            <option [ngValue]="null" disabled>Select an approved travel request</option>
+            <option *ngFor="let tr of travelRequests" [ngValue]="tr.requestId">
+              #{{ tr.requestId }} — {{ tr.purposeOfTravel }} ({{ tr.locationName }})
+            </option>
+          </select>
+          <div class="invalid-feedback" style="max-width:420px">Required — select the approved travel request.</div>
+          <div *ngIf="travelRequests.length === 0" class="form-text text-muted">
+            No approved travel requests available yet.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Reservation Type</label>
+          <div class="type-picker">
+            <label *ngFor="let t of types" class="picker-card"
+              [class.selected]="f['reservationTypeId'].value == t.id">
+              <input type="radio" formControlName="reservationTypeId" [value]="t.id" class="d-none">
+              <i [class]="'bi picker-icon ' + getTypeIcon(t.typeName)"></i>
+              <span class="picker-name">{{ t.typeName }}</span>
+            </label>
+          </div>
+          <div *ngIf="f['reservationTypeId'].invalid && f['reservationTypeId'].touched"
+               class="text-danger small mt-1">Please select a reservation type.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Entity / Provider Name</label>
+          <input type="text" class="form-control"
+            [class.is-invalid]="f['reservationDoneWithEntity'].invalid && f['reservationDoneWithEntity'].touched"
+            formControlName="reservationDoneWithEntity" placeholder="e.g. IndiGo Airlines, Taj Hotels">
+          <div class="invalid-feedback">Required.</div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label class="form-label fw-semibold">Reservation Date</label>
+            <input type="date" class="form-control"
+              [class.is-invalid]="f['reservationDate'].invalid && f['reservationDate'].touched"
+              formControlName="reservationDate">
+            <div class="invalid-feedback">Required.</div>
+          </div>
+          <div class="col-6">
+            <label class="form-label fw-semibold">Amount (Rs.)</label>
+            <input type="number" class="form-control"
+              [class.is-invalid]="f['amount'].invalid && f['amount'].touched"
+              formControlName="amount" placeholder="e.g. 5000" min="1">
+            <div class="invalid-feedback">
+              <span *ngIf="f['amount'].errors?.['required']">Required.</span>
+              <span *ngIf="f['amount'].errors?.['min']">Must be greater than 0.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Confirmation / PNR ID</label>
+          <input type="text" class="form-control"
+            [class.is-invalid]="f['confirmationId'].invalid && f['confirmationId'].touched"
+            formControlName="confirmationId" placeholder="e.g. PNR123456">
+          <div class="invalid-feedback">Required.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Remarks (optional)</label>
+          <input type="text" class="form-control" formControlName="remarks" placeholder="Any notes">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Booking Confirmation PDF</label>
+          <input type="file" class="form-control" accept=".pdf" (change)="onFileChange($event)">
+          <div *ngIf="fileError" class="text-danger small mt-1">{{ fileError }}</div>
+          <div class="form-text">PDF only, max 1MB.</div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+            {{ loading ? 'Uploading...' : 'Submit Reservation' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
