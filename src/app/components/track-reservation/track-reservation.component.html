@@ -1,5 +1,5 @@
 <div class="container py-4" style="max-width:720px;">
-  <h4 class="fw-bold mb-4"><i class="bi bi-calendar-check me-2 text-primary"></i>Track Reservations</h4>
+  <h4 class="fw-bold mb-4"><i class="bi bi-calendar-check me-2 text-primary"></i>🎫 Track Reservations</h4>
 
   <div class="card shadow-sm mb-4">
     <div class="card-body p-3">
@@ -24,7 +24,7 @@
         <div class="col-auto">
           <button type="submit" class="btn btn-primary" [disabled]="loading">
             <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
-            Search
+            🔍 Search
           </button>
         </div>
       </form>
@@ -61,7 +61,7 @@
               </td>
             </tr>
             <tr *ngIf="reservations.length === 0">
-              <td colspan="7" class="text-center text-muted py-4">No reservations found.</td>
+              <td colspan="7" class="text-center text-muted py-4">🎫 No reservations found.</td>
             </tr>
           </tbody>
         </table>
